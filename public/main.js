@@ -9,12 +9,17 @@ $(document).ready(function() {
     var input = $('input#messages');
     
     //sets up the output section to display the messages in
+    var un = $('#un');
     var messages = $('#rec_messages');
 
      
     //addMessage function to display the emitter messages from the server
-    var addMessage = function( theName, message) {
-       messages.append('<div>' +  theName +':' + message + '</div>');
+    var addName = function( theName) {
+       un.append('<div>' +  theName + " says:" + '</div>');
+       
+    };
+    var addMessage = function( message) {
+       messages.append('<div>' +  message + '</div>');
     };
 
     //keydown checks for input boxes
@@ -37,10 +42,11 @@ $(document).ready(function() {
     var message = input.val();
     
     //calls the addMessage function to display the message you typed into the above div, local
-  
-    addMessage(theName,message);
+    addName(theName);
+    addMessage(message);
 
     //sends the message 'message' type to the server with the message content
+    socket.emit('theName' ,  theName);
     socket.emit('message' ,  message);
 
     //resets the input for the message, but leaves the username there
@@ -50,7 +56,7 @@ $(document).ready(function() {
     });
     
 //listener for incoming messages.  if it receives one, pass the message onto the addMessage func for display
-
+socket.on('theName', addName);
 socket.on('message', addMessage);
 
 });//end doc.ready
